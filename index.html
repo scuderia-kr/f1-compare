@@ -107,6 +107,38 @@ body { background:#04080c; }
   .row2 label, .err { font-size:9.5px; }
   .row2 label input { width:10px; height:10px; }
 }
+/* 인스타그램 팔로워 인증 */
+.v[hidden] { display:none !important; }
+.sub { margin:-4px 0 10px; font-size:10.5px; color:var(--muted); letter-spacing:.02em; line-height:1.5; }
+.igbtn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; height:40px; border-radius:999px; border:0; cursor:pointer; color:#fff; text-decoration:none;
+  font:inherit; font-size:12.5px; font-weight:700; letter-spacing:.02em;
+  background:linear-gradient(90deg, #f58529 0%, #dd2a7b 45%, #8134af 75%, #515bd4 100%); box-shadow:0 6px 18px rgba(221,42,123,.3), inset 0 1px 0 rgba(255,255,255,.25); }
+.igbtn svg { width:16px; height:16px; flex:none; }
+.igbtn.sm { height:34px; font-size:11.5px; }
+.ghostbtn { display:inline-flex; align-items:center; gap:5px; margin-top:9px; border:0; background:none; color:var(--faint); font:inherit; font-size:10.5px; cursor:pointer; letter-spacing:.04em; }
+.ghostbtn svg { width:11px; height:11px; }
+.ghostbtn:hover { color:var(--muted); }
+.ghostbtn[hidden] { display:none; }
+.steps { display:grid; gap:10px; text-align:left; }
+.step { display:grid; gap:6px; }
+.step .n { font-size:9px; font-weight:700; letter-spacing:.24em; color:var(--faint); }
+.two { display:grid; grid-template-columns:auto 1fr; gap:6px; }
+.chip2 { height:34px; padding:0 12px; border-radius:999px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; font:inherit; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap; }
+.chip2.done { border-color:rgba(127,224,168,.7); color:#bff0d3; }
+#codePill input { letter-spacing:.24em; font-variant-numeric:tabular-nums; padding-left:14px; }
+#codePill { padding-left:6px; }
+#fi .err, .card > .v .err { min-height:1.2em; margin-top:8px; font-size:10.5px; color:var(--muted); }
+#fi .err.bad { color:var(--red); }
+.ok { display:grid; justify-items:center; gap:6px; padding:4px 0 2px; }
+.ok .ic { width:38px; height:38px; border-radius:50%; display:grid; place-items:center; background:rgba(79,191,127,.16); border:1px solid rgba(79,191,127,.6); color:#7fe0a8; }
+.ok .ic svg { width:18px; height:18px; }
+.ok b { font-size:14px; font-weight:750; }
+.ok small { font-size:10.5px; color:var(--muted); line-height:1.5; }
+.ok .id { color:#fff; font-weight:700; }
+.bar { width:100%; height:3px; border-radius:2px; background:rgba(255,255,255,.12); overflow:hidden; margin-top:6px; }
+.bar i { display:block; height:100%; width:0; background:#fff; animation:fill 1.4s ease forwards; }
+@keyframes fill { to { width:100%; } }
+@media (max-width:600px) { .igbtn { height:36px; font-size:11.5px; } .igbtn.sm, .chip2 { height:31px; } .sub { font-size:9.5px; } .step .n { font-size:8.5px; } }
 </style>
 </head>
 <body>
@@ -115,8 +147,33 @@ body { background:#04080c; }
   <p class="for">FOR SCUDERIA FERRARI</p>
   <img class="num" src="gate/num.webp" alt="41.053" width="874" height="204">
   <div class="driver"><img id="drv" alt="" style="object-position:50% 0"></div>
-  <form class="card" id="f" autocomplete="off">
-    <p class="ask">ENTER PASSCODE</p>
+  <div class="card" id="card">
+    <!-- 처음: 인스타그램 팔로워 인증 / 관리자 로그인 -->
+    <section class="v" data-v="home" hidden>
+      <p class="ask">FOLLOWERS ONLY</p>
+      <p class="sub">인스타그램 팔로워만 들어올 수 있어요</p>
+      <button class="igbtn" type="button" id="goIg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>인스타그램 팔로워 인증</button>
+      <button class="ghostbtn" type="button" id="goAdmin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>관리자 로그인</button>
+    </section>
+    <!-- 인스타그램: 🩶 댓글 → DM 으로 받은 번호 입력 -->
+    <form class="v" data-v="ig" id="fi" autocomplete="off" hidden>
+      <p class="ask">VERIFY</p>
+      <div class="steps">
+        <div class="step"><span class="n">STEP 1 · 게시물에 🩶 댓글 달기</span>
+          <div class="two"><button class="chip2" type="button" id="copyHeart">🩶 복사</button><a class="igbtn sm" id="openPost" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>게시물 열기</a></div></div>
+        <div class="step"><span class="n">STEP 2 · DM 으로 받은 번호 입력</span>
+          <div class="pill" id="codePill">
+            <input id="code" inputmode="numeric" autocomplete="one-time-code" placeholder="0000-0000" aria-label="입장 번호" maxlength="9">
+            <span class="div"></span>
+            <button class="go" id="codeGo" type="submit" aria-label="입장"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div></div>
+      </div>
+      <div class="err" id="codeErr" role="status"></div>
+      <button class="ghostbtn" type="button" data-back>← 처음으로</button>
+    </form>
+    <!-- 관리자·지인: 사이트 비밀번호 -->
+    <form class="v" data-v="admin" id="f" autocomplete="off">
+      <p class="ask">ENTER PASSCODE</p>
     <div class="pill" id="pill">
       <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
       <input id="pw" type="password" placeholder="Passcode" aria-label="비밀번호">
@@ -124,7 +181,14 @@ body { background:#04080c; }
       <button class="go" id="go" type="submit" aria-label="열기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
     </div>
     <div class="row2"><label><input id="remember" type="checkbox"> 이 기기에서 기억하기</label><span class="err" id="err" role="status"></span></div>
-  </form>
+      <button class="ghostbtn" type="button" data-back id="backToIg" hidden>← 인스타그램 인증으로</button>
+    </form>
+    <!-- 인증 완료 -->
+    <section class="v" data-v="ok" hidden>
+      <div class="ok"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+        <b>확인됐어요</b><small><span class="id" id="okId"></span> 님, 환영해요<br>채팅에서는 이 아이디로 표시돼요</small><div class="bar"><i></i></div></div>
+    </section>
+  </div>
 </main>
 <script>
 // 드라이버 사진: 매번 완전히 무작위 (암호학적 난수, 7장 균등 확률, 이전 기록과 무관)
@@ -178,7 +242,7 @@ async function openSite(key) {
       return new TextDecoder().decode(await decryptBytes(key, await r.arrayBuffer()));
     },
     async fetchJson(path) { return JSON.parse(await this.fetchText(path)); },
-    forget() { try { localStorage.removeItem(STORE); } catch (e) {} },
+    forget() { try { localStorage.removeItem(STORE); localStorage.removeItem("f1site.member"); } catch (e) {} },
   };
   // 파싱 중에 document.open 을 부르면 무시되고 내용이 덧붙으므로 로드 완료 후에 교체
   if (document.readyState !== "complete") await new Promise((r) => addEventListener("load", r, { once: true }));
@@ -218,6 +282,59 @@ document.getElementById("f").addEventListener("submit", async (ev) => {
   } catch (e) {
     err.className = "err bad"; err.textContent = "사이트를 열지 못했어요. 새로고침 후 다시 시도해 주세요.";
     btn.disabled = false;
+  }
+});
+// ---------------------------------------------------------------- 인스타그램 팔로워 인증 (매니챗이 DM 으로 준 번호로 입장)
+const RELAY = new URLSearchParams(location.search).get("relay") || "https://f1-compare-relay-scuderia.fly.dev";
+const POST_URL = "https://www.instagram.com/p/DaVcYPoit7i/";
+const views = [...document.querySelectorAll(".card > .v")];
+function show(v) { views.forEach((x) => (x.hidden = x.dataset.v !== v)); const f = document.querySelector(`[data-v="${v}"] input:not([type=checkbox])`); if (f) setTimeout(() => f.focus(), 30); }
+document.getElementById("goIg").onclick = () => show("ig");
+document.getElementById("goAdmin").onclick = () => show("admin");
+document.querySelectorAll("[data-back]").forEach((b) => (b.onclick = () => show("home")));
+document.getElementById("openPost").href = POST_URL;
+// 관리자가 인스타그램 입장을 켜 둔 경우에만 인스타 화면을 보여준다 (꺼져 있거나 서버 응답이 없으면 비밀번호 화면 그대로)
+(async () => {
+  try {
+    const ctl = new AbortController(); setTimeout(() => ctl.abort(), 4000);
+    const c = await (await fetch(RELAY + "/api/gate-config", { cache: "no-store", signal: ctl.signal })).json();
+    if (c.ig && !document.getElementById("pw").value) { document.getElementById("backToIg").hidden = false; show("home"); }
+  } catch (e) { /* 비밀번호 화면 유지 */ }
+})();
+document.getElementById("copyHeart").onclick = async (e) => {
+  const b = e.currentTarget;
+  try { await navigator.clipboard.writeText("🩶"); }
+  catch (_) { const t = document.createElement("textarea"); t.value = "🩶"; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }
+  b.textContent = "복사됐어요"; b.classList.add("done"); setTimeout(() => { b.textContent = "🩶 복사"; b.classList.remove("done"); }, 1600);
+};
+const codeIn = document.getElementById("code");
+codeIn.addEventListener("input", () => {   // 숫자 8자리를 0000-0000 모양으로
+  const d = codeIn.value.replace(/[^0-9]/g, "").slice(0, 8); codeIn.value = d.length > 4 ? d.slice(0, 4) + "-" + d.slice(4) : d;
+});
+function deviceId() {   // 실시간 화면과 같은 기기 값 (채팅 닉네임 확인용)
+  let d = null; try { d = JSON.parse(localStorage.getItem("f1live.device")); } catch (e) {}
+  if (!d) { d = crypto.randomUUID ? crypto.randomUUID() : Array.from(crypto.getRandomValues(new Uint8Array(16)), (x) => x.toString(16).padStart(2, "0")).join("");
+    try { localStorage.setItem("f1live.device", JSON.stringify(d)); } catch (e) {} }
+  return d;
+}
+document.getElementById("fi").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const err = document.getElementById("codeErr"), btn = document.getElementById("codeGo"), code = codeIn.value.replace(/[^0-9]/g, "");
+  if (code.length !== 8) { err.className = "err bad"; err.textContent = "DM 으로 받은 8자리 번호를 입력해 주세요."; return; }
+  btn.disabled = true; err.className = "err"; err.textContent = "확인 중…";
+  try {
+    const r = await fetch(RELAY + "/api/join", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code, device: deviceId() }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.key) throw new Error(j.msg || "입장할 수 없어요.");
+    await meta();
+    try { localStorage.setItem(STORE, j.key); localStorage.setItem("f1site.member", JSON.stringify({ username: j.username, mtok: j.mtok })); } catch (e) {}
+    document.getElementById("okId").textContent = "@" + j.username;
+    show("ok");
+    await new Promise((res) => setTimeout(res, 1500));
+    await openSite(await crypto.subtle.importKey("raw", b64(j.key), "AES-GCM", false, ["decrypt"]));
+  } catch (e) {
+    err.className = "err bad"; err.textContent = e.message || "입장할 수 없어요."; btn.disabled = false;
+    const p = document.getElementById("codePill"); p.classList.remove("shake"); void p.offsetWidth; p.classList.add("shake");
   }
 });
 })();
