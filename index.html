@@ -273,6 +273,7 @@ document.getElementById("f").addEventListener("submit", async (ev) => {
     document.getElementById("pw").select();
     return;
   }
+  try { localStorage.removeItem("f1site.member"); } catch (e) {}   // 비밀번호로 들어오면 인스타 회원 정보는 지운다 (관리자 기기)
   if (document.getElementById("remember").checked) {
     try { localStorage.setItem(STORE, toB64(new Uint8Array(await crypto.subtle.exportKey("raw", key)))); } catch (e) {}
   }
