@@ -43,7 +43,8 @@ body { background:#04080c; }
 .driver img.on { opacity:1; }
 
 /* 유리 카드 */
-.card { position:relative; z-index:2; width:min(560px, 100%); margin-top:calc(var(--pw) * -.06); padding:clamp(18px, 3vh, 28px) clamp(16px, 3.4vw, 34px) clamp(18px, 3vh, 28px);
+/* 카드 폭만 원본 시안 비율(사진 폭의 62.8%)로. 안의 글자·입력칸·버튼 크기는 그대로 */
+.card { position:relative; z-index:2; width:clamp(300px, calc(var(--pw) * .628), 100%); margin-top:calc(var(--pw) * -.06); padding:clamp(18px, 3vh, 28px) clamp(16px, 3.4vw, 34px) clamp(18px, 3vh, 28px);
   border-radius:22px; background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025)); border:1px solid rgba(255,255,255,.13);
   -webkit-backdrop-filter:blur(16px) saturate(1.15); backdrop-filter:blur(16px) saturate(1.15);
   box-shadow:0 20px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08); text-align:center; }
@@ -72,23 +73,17 @@ body { background:#04080c; }
 @media (max-width: 600px) {
   .stage { justify-content:center; }   /* 남는 세로 공간은 위아래로 나눔 */
   /* 휴대폰: 입력 카드를 작게 (사진이 주인공) */
+  .card { width:min(340px, 92%); padding:14px 14px 10px; border-radius:18px; }
+  .ask { font-size:.6875rem; letter-spacing:.38em; padding-left:.38em; margin-bottom:10px; }
+  .pill { height:46px; padding:0 4px 0 14px; border-width:1px; }
+  .pill svg.lock { width:16px; height:16px; }
+  .pill input { font-size:16px; padding:0 10px 0 10px; letter-spacing:.2em; }
+  .pill .div { margin-right:6px; }
+  .go { width:36px; height:36px; } .go svg { width:16px; height:16px; }
+  .row2 { margin-top:6px; } .row2 label { font-size:.6875rem; }
 }
+@media (max-width: 480px) { .row2 { flex-direction:column-reverse; gap:4px; } }
 @media (prefers-reduced-motion: reduce) { .stage, .shake { animation:none; } .driver img { transition:none; } }
-/* 입력 카드 크기: 원본 시안 비율(사진 폭 1122 중 카드 705)로, 사진 크기에 맞춰 함께 커지고 작아진다.
-   --k = 원본 1px 이 화면에서 차지하는 크기. 휴대폰에서도 누르기 쉬운 최소 크기는 지킨다 */
-.card { --cw:clamp(296px, calc(var(--pw) * .628), 92vw); --k:calc(var(--cw) / 705);
-  width:var(--cw); padding:calc(var(--k) * 40) calc(var(--k) * 37) calc(var(--k) * 26); border-radius:calc(var(--k) * 30); }
-.ask { font-size:max(10px, calc(var(--k) * 19)); margin-bottom:calc(var(--k) * 30); letter-spacing:.42em; padding-left:.42em; }
-.pill { height:max(44px, calc(var(--k) * 88)); padding:0 calc(var(--k) * 8) 0 calc(var(--k) * 40); border-width:max(1px, calc(var(--k) * 1.6)); }
-.pill svg.lock { width:max(15px, calc(var(--k) * 26)); height:max(15px, calc(var(--k) * 26)); }
-.pill input { font-size:max(16px, calc(var(--k) * 21)); padding:0 calc(var(--k) * 20) 0 calc(var(--k) * 28); letter-spacing:.2em; }
-.pill .div { height:44%; margin-right:calc(var(--k) * 14); }
-.go { width:max(34px, calc(var(--k) * 66)); height:max(34px, calc(var(--k) * 66)); }
-.go svg { width:max(15px, calc(var(--k) * 26)); height:max(15px, calc(var(--k) * 26)); }
-.row2 { margin-top:calc(var(--k) * 14); gap:6px; }
-.row2 label, .err { font-size:max(10px, calc(var(--k) * 14)); }
-.row2 label input { width:max(11px, calc(var(--k) * 15)); height:max(11px, calc(var(--k) * 15)); }
-@media (max-width: 480px) { .row2 { flex-direction:column-reverse; gap:3px; } }
 </style>
 </head>
 <body>
