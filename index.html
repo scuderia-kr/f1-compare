@@ -7,81 +7,110 @@
 <title>F1 Compare</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-/* 비밀번호 화면: 우주 · 지구 (평문 공개 파일이라 사이트 내용은 담지 않는다) */
-:root { --ink:#e8ecf2; --muted:#9aa4b6; --faint:#5f6b85; --blue:#8fb8ff; --red:#ff7a66; }
+/* 비밀번호 화면 (평문 공개 파일이라 사이트 내용은 담지 않는다) — 제목·배경은 고정, 드라이버 사진만 무작위 */
+:root { --ink:#eef1f5; --muted:#a3acba; --faint:#6b7585; --red:#ff6b5e; }
 * { box-sizing:border-box; }
-html,body { margin:0; min-height:100%; background:#000; color:var(--ink); overflow-x:hidden;
+html,body { margin:0; min-height:100%; color:var(--ink); overflow-x:hidden;
   font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif; -webkit-font-smoothing:antialiased; }
-#stars { position:fixed; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; }
-.stage { position:relative; z-index:1; min-height:100vh; min-height:100svh; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:max(24px, 5vh) 16px max(20px, 4vh); animation:in 1.2s ease both; }
-@keyframes in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
-.title { margin:0; font-size:clamp(.875rem, 2.1vh, 1.25rem); font-weight:500; letter-spacing:.42em; padding-left:.42em; text-transform:uppercase; }
-.code { margin:clamp(10px, 2vh, 22px) 0 0; font-size:clamp(1.625rem, 4vh, 2.5rem); font-weight:700; letter-spacing:.22em; padding-left:.22em; font-variant-numeric:tabular-nums; }
-.globe { position:relative; width:min(100vw, 64vh, 780px); aspect-ratio:941 / 860; margin:clamp(8px, 2.5vh, 30px) 0; }
-.globe img { position:relative; z-index:1; display:block; width:100%; height:100%;
-  -webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%, #000 86%, transparent 100%); mask-image:radial-gradient(ellipse 50% 50% at 50% 50%, #000 86%, transparent 100%); }
-/* 지구를 가로지르는 빛줄기: 이미지 밖 화면 끝까지 이어 준다 */
-.horizon { position:absolute; z-index:2; top:50.12%; left:50%; width:100vw; height:2px; margin-top:-1px; transform:translateX(-50%); pointer-events:none;
-  background:linear-gradient(90deg, transparent 0%, rgba(255,122,102,.55) 12%, rgba(255,150,130,.95) 30%, rgba(200,190,220,.6) 50%, rgba(143,184,255,.95) 70%, rgba(143,184,255,.55) 88%, transparent 100%);
-  box-shadow:0 0 6px rgba(255,140,120,.45), 0 0 14px rgba(143,184,255,.35); }
-form { display:flex; flex-direction:column; align-items:center; width:100%; }
-.ask { margin:0; font-size:clamp(.875rem, 2.1vh, 1.25rem); font-weight:500; letter-spacing:.48em; padding-left:.48em; color:#cfd5de; }
-.field { position:relative; width:min(300px, 74vw); margin-top:clamp(14px, 2.6vh, 26px); }
-input[type=password] { width:100%; padding:10px 40px 10px 40px; background:transparent; border:0; border-bottom:1px solid rgba(190,205,235,.35); border-radius:0;
-  color:#fff; font:inherit; font-size:1.375rem; letter-spacing:.45em; text-align:center; outline:none; caret-color:var(--blue); transition:border-color .2s, box-shadow .2s; }
-input[type=password]::placeholder { color:rgba(190,205,235,.28); letter-spacing:.3em; font-size:1rem; }
-input[type=password]:focus { border-bottom-color:var(--blue); box-shadow:0 10px 18px -14px rgba(143,184,255,.9); }
-.go { position:absolute; right:2px; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:50%; border:1px solid rgba(190,205,235,.3);
-  background:transparent; color:var(--ink); font-size:1rem; cursor:pointer; display:grid; place-items:center; padding:0; }
-.go:hover { border-color:var(--blue); color:#fff; }
-.go:disabled { opacity:.4; cursor:wait; }
-label { display:flex; gap:8px; align-items:center; margin-top:16px; font-size:.75rem; color:var(--faint); letter-spacing:.04em; cursor:pointer; }
-label input { accent-color:#5b7bd5; margin:0; }
-.err { min-height:1.2em; margin-top:10px; font-size:.8125rem; color:var(--muted); letter-spacing:.04em; text-align:center; }
+/* 배경: 위쪽이 살짝 밝은 남색 → 아래 검정, 가장자리 어둡게 + 아주 옅은 질감 */
+body { background:#04080c; }
+.bg { position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(110% 30% at 50% -6%, rgba(40,62,84,.5) 0%, rgba(14,24,34,.2) 55%, transparent 100%),
+    radial-gradient(140% 100% at 50% 50%, transparent 55%, rgba(0,0,0,.6) 100%),
+    linear-gradient(180deg, #0c151e 0%, #070d13 20%, #060b10 45%, #04080c 100%); }
+.bg::after { content:""; position:absolute; inset:0; opacity:.22; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .6  0 0 0 0 .7  0 0 0 0 .8  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+
+.stage { position:relative; z-index:1; min-height:100vh; min-height:100svh; display:flex; flex-direction:column; align-items:center;
+  padding:clamp(28px, 5vh, 56px) 16px clamp(20px, 4vh, 40px); animation:in 1s ease both; }
+@keyframes in { from { opacity:0; } to { opacity:1; } }
+/* 글자 비율은 원본처럼: 위 작은 제목 ≈ 숫자 크기의 12% */
+/* 41.053 은 원본 로고 그림 그대로 (전용 서체·금속 질감·기울기). 위 제목 크기는 원본 비율(로고 폭의 약 3%) */
+.stage { --nw:clamp(280px, min(84vw, 57vh), 760px);   /* 41.053 로고 폭 */
+  --pw:calc(var(--nw) / .738); }                      /* 사진 폭: 원본처럼 로고가 사진 폭의 73.8% → 확대 없음 */
+.for { margin:0; font-size:max(.625rem, calc(var(--nw) * .0295)); font-weight:500; letter-spacing:.62em; padding-left:.62em; color:#dfe4ea; white-space:nowrap; }
+.num { display:block; width:var(--nw); height:auto; margin:calc(var(--nw) * .018) 0 0; }
+
+/* 드라이버 사진: 모든 사진은 헬멧 꼭대기가 같은 위치(위에서 60/800), 아래 끝은 사진마다 미리 투명하게 녹여 둠가 되게 잘라 둠 → 41.053 과의 간격이 항상 같다 */
+/* 남는 세로 공간을 사진에 준다 (PC 에서도 크게), 폭은 화면을 넘지 않게 */
+.driver { position:relative; flex:none; width:var(--pw); height:calc(var(--pw) * 800 / 1122); margin-top:calc(var(--pw) * .014); }
+.driver img { display:block; width:100%; height:100%; object-fit:fill; opacity:0; transition:opacity .8s;
+  -webkit-mask-image:linear-gradient(180deg, transparent 0, #000 9%, #000 100%), linear-gradient(90deg, transparent 0, #000 24%, #000 76%, transparent 100%);
+  -webkit-mask-composite:source-in; mask-image:linear-gradient(180deg, transparent 0, #000 9%, #000 100%), linear-gradient(90deg, transparent 0, #000 24%, #000 76%, transparent 100%); mask-composite:intersect; }
+@media (max-aspect-ratio: 1/1) { .driver img { -webkit-mask-image:linear-gradient(180deg, transparent 0, #000 9%, #000 100%), linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  mask-image:linear-gradient(180deg, transparent 0, #000 9%, #000 100%), linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); } }
+.driver img.on { opacity:1; }
+
+/* 유리 카드 */
+.card { position:relative; z-index:2; width:min(560px, 100%); margin-top:calc(var(--pw) * -.06); padding:clamp(18px, 3vh, 28px) clamp(16px, 3.4vw, 34px) clamp(18px, 3vh, 28px);
+  border-radius:22px; background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025)); border:1px solid rgba(255,255,255,.13);
+  -webkit-backdrop-filter:blur(16px) saturate(1.15); backdrop-filter:blur(16px) saturate(1.15);
+  box-shadow:0 20px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08); text-align:center; }
+.ask { margin:0 0 clamp(14px, 2.2vh, 20px); font-size:.9375rem; font-weight:500; letter-spacing:.42em; padding-left:.42em; color:#e8ecf1; }
+.pill { position:relative; display:flex; align-items:center; height:clamp(56px, 7.2vh, 66px); border-radius:999px; padding:0 6px 0 22px;
+  border:1.5px solid rgba(235,240,246,.45); background:rgba(8,12,18,.28); box-shadow:inset 0 1px 0 rgba(255,255,255,.06); transition:border-color .2s, box-shadow .2s; }
+.pill:focus-within { border-color:rgba(255,255,255,.8); box-shadow:0 0 0 4px rgba(255,255,255,.06), inset 0 1px 0 rgba(255,255,255,.08); }
+.pill svg.lock { flex:none; width:20px; height:20px; color:#d9dee5; opacity:.9; }
+.pill input { flex:1; min-width:0; height:100%; padding:0 14px 0 18px; border:0; background:transparent; outline:none; color:#fff;
+  font:inherit; font-size:1.0625rem; letter-spacing:.28em; caret-color:#fff; }
+.pill input::placeholder { color:rgba(225,231,238,.62); letter-spacing:.18em; }
+.pill .div { flex:none; width:1px; height:46%; background:rgba(235,240,246,.3); margin-right:10px; }
+.go { flex:none; width:clamp(44px, 5.8vh, 52px); height:clamp(44px, 5.8vh, 52px); border-radius:50%; cursor:pointer; padding:0; display:grid; place-items:center; color:#fff;
+  border:1px solid rgba(255,255,255,.28); background:radial-gradient(120% 120% at 30% 20%, #6b7178 0%, #3a3f46 45%, #1c2026 100%);
+  box-shadow:0 4px 12px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.18); transition:transform .15s, filter .15s; }
+.go:hover { filter:brightness(1.15); } .go:active { transform:scale(.95); }
+.go svg { width:20px; height:20px; }
+.go:disabled { opacity:.5; cursor:wait; }
+.row2 { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:12px; min-height:1.3em; }
+.row2 label { display:flex; align-items:center; gap:7px; font-size:.75rem; color:var(--faint); letter-spacing:.03em; cursor:pointer; }
+.row2 label input { accent-color:#c8cfd8; margin:0; }
+.err { font-size:.8125rem; color:var(--muted); letter-spacing:.03em; }
 .err.bad { color:var(--red); }
 .shake { animation:shake .35s; }
-@keyframes shake { 20%,60% { transform:translateX(-6px); } 40%,80% { transform:translateX(6px); } }
-@media (prefers-reduced-motion: reduce) { .stage, .shake { animation:none; } }
+@keyframes shake { 20%,60% { transform:translateX(-7px); } 40%,80% { transform:translateX(7px); } }
+@media (max-width: 600px) {
+  .stage { justify-content:center; }   /* 남는 세로 공간은 위아래로 나눔 */
+  /* 휴대폰: 입력 카드를 작게 (사진이 주인공) */
+  .card { width:min(340px, 92%); padding:14px 14px 10px; border-radius:18px; }
+  .ask { font-size:.6875rem; letter-spacing:.38em; padding-left:.38em; margin-bottom:10px; }
+  .pill { height:46px; padding:0 4px 0 14px; border-width:1px; }
+  .pill svg.lock { width:16px; height:16px; }
+  .pill input { font-size:16px; padding:0 10px 0 10px; letter-spacing:.2em; }
+  .pill .div { margin-right:6px; }
+  .go { width:36px; height:36px; } .go svg { width:16px; height:16px; }
+  .row2 { margin-top:6px; } .row2 label { font-size:.6875rem; }
+}
+@media (max-width: 480px) { .row2 { flex-direction:column-reverse; gap:4px; } }
+@media (prefers-reduced-motion: reduce) { .stage, .shake { animation:none; } .driver img { transition:none; } }
 </style>
 </head>
 <body>
-<canvas id="stars" aria-hidden="true"></canvas>
+<div class="bg" aria-hidden="true"></div>
 <main class="stage">
-  <h1 class="title">Access Village</h1>
-  <div class="code">41.053</div>
-  <div class="globe"><div class="horizon"></div><img src="earth.webp" alt="" width="941" height="860"></div>
-  <form id="f" autocomplete="off">
+  <p class="for">FOR SCUDERIA FERRARI</p>
+  <img class="num" src="gate/num.webp" alt="41.053" width="874" height="204">
+  <div class="driver"><img id="drv" alt="" style="object-position:50% 0"></div>
+  <form class="card" id="f" autocomplete="off">
     <p class="ask">ENTER PASSCODE</p>
-    <div class="field">
-      <input id="pw" type="password" placeholder="••••" aria-label="비밀번호" autofocus required>
-      <button id="go" class="go" type="submit" aria-label="열기">→</button>
+    <div class="pill" id="pill">
+      <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+      <input id="pw" type="password" placeholder="Passcode" aria-label="비밀번호">
+      <span class="div"></span>
+      <button class="go" id="go" type="submit" aria-label="열기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
     </div>
-    <label><input id="remember" type="checkbox"> 이 기기에서 기억하기</label>
-    <div class="err" id="err" role="status"></div>
+    <div class="row2"><label><input id="remember" type="checkbox"> 이 기기에서 기억하기</label><span class="err" id="err" role="status"></span></div>
   </form>
 </main>
 <script>
+// 드라이버 사진: 매번 완전히 무작위 (암호학적 난수, 7장 균등 확률, 이전 기록과 무관)
 (() => {
-  const cv = document.getElementById("stars"), ctx = cv.getContext("2d");
-  function draw() {
-    const dpr = Math.min(2, devicePixelRatio || 1), w = innerWidth, h = innerHeight;
-    cv.width = w * dpr; cv.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
-    let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-    const n = Math.round(w * h / 2600);
-    for (let i = 0; i < n; i++) {
-      const x = rnd() * w, y = rnd() * h, r = rnd() ** 3 * 1.3 + 0.25, a = 0.25 + rnd() * 0.75, blue = rnd() < 0.35;
-      ctx.fillStyle = blue ? `rgba(190,210,255,${a})` : `rgba(255,255,255,${a})`;
-      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
-      if (r > 1.25) {   // 밝은 별은 십자 빛
-        const g = ctx.createRadialGradient(x, y, 0, x, y, r * 6); g.addColorStop(0, `rgba(220,230,255,${a * 0.5})`); g.addColorStop(1, "rgba(220,230,255,0)");
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r * 6, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = `rgba(230,238,255,${a * 0.6})`; ctx.lineWidth = 0.6; ctx.beginPath();
-        ctx.moveTo(x - r * 5, y); ctx.lineTo(x + r * 5, y); ctx.moveTo(x, y - r * 5); ctx.lineTo(x, y + r * 5); ctx.stroke();
-      }
-    }
-  }
-  draw(); let t = null; addEventListener("resize", () => { clearTimeout(t); t = setTimeout(draw, 150); });
+  const N = 7, img = document.getElementById("drv");
+  const forced = +new URLSearchParams(location.search).get("i");
+  const r = new Uint32Array(1); crypto.getRandomValues(r);
+  const i = forced >= 1 && forced <= N ? forced : 1 + (r[0] % N);
+  img.onload = () => img.classList.add("on");
+  img.src = `gate/driver${i}.webp`;
 })();
 (() => {
 const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
@@ -152,7 +181,7 @@ document.getElementById("f").addEventListener("submit", async (ev) => {
   } catch (e) {
     err.className = "err bad"; err.textContent = "비밀번호가 맞지 않아요.";
     btn.disabled = false;
-    const fld = document.querySelector(".field"); fld.classList.remove("shake"); void fld.offsetWidth; fld.classList.add("shake");
+    const fld = document.getElementById("pill"); fld.classList.remove("shake"); void fld.offsetWidth; fld.classList.add("shake");
     document.getElementById("pw").select();
     return;
   }
