@@ -117,6 +117,12 @@ body { background:#04080c; }
 .igbtn.sm { height:34px; font-size:11.5px; }
 .ghostbtn { display:inline-flex; align-items:center; gap:5px; margin-top:9px; border:0; background:none; color:var(--faint); font:inherit; font-size:10.5px; cursor:pointer; letter-spacing:.04em; }
 .ghostbtn svg { width:11px; height:11px; }
+/* 설정(관리자 로그인): 카드 오른쪽 위 톱니바퀴 */
+.gear { position:absolute; top:10px; right:10px; width:26px; height:26px; display:grid; place-items:center; border:0; border-radius:50%; background:none; color:var(--faint); cursor:pointer; }
+.gear:hover { color:#fff; background:rgba(255,255,255,.08); }
+.gear svg { width:15px; height:15px; }
+.gear.on { color:#ff5b5b; }
+.admstate { margin:2px 0 8px; text-align:center; }
 .ghostbtn:hover { color:var(--muted); }
 .ghostbtn[hidden] { display:none; }
 .steps { display:grid; gap:10px; text-align:left; }
@@ -148,6 +154,7 @@ body { background:#04080c; }
   <img class="num" src="gate/num.webp" alt="41.053" width="874" height="204">
   <div class="driver"><img id="drv" alt="" style="object-position:50% 0"></div>
   <div class="card" id="card">
+    <button class="gear" type="button" id="goSet" aria-label="설정 (관리자 로그인)" title="설정"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <!-- 처음: 인스타그램 팔로워 인증 / 관리자 로그인 -->
     <section class="v" data-v="home" hidden>
       <p class="ask">FOLLOWERS ONLY</p>
@@ -182,6 +189,20 @@ body { background:#04080c; }
     </div>
     <div class="row2"><label><input id="remember" type="checkbox"> 이 기기에서 기억하기</label><span class="err" id="err" role="status"></span></div>
       <button class="ghostbtn" type="button" data-back id="backToIg" hidden>← 인스타그램 인증으로</button>
+    </form>
+    <!-- 설정: 관리자 로그인 (관리자만 영상 만들기 탭이 보인다) -->
+    <form class="v" data-v="set" id="fa" autocomplete="off" hidden>
+      <p class="ask">ADMIN</p>
+      <p class="sub admstate" id="admState">관리자로 로그인하면 영상 만들기 탭이 보여요</p>
+      <div class="pill" id="apill">
+        <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+        <input id="apw" type="password" placeholder="Admin password" aria-label="관리자 비밀번호" autocomplete="current-password">
+        <span class="div"></span>
+        <button class="go" id="ago" type="submit" aria-label="관리자 로그인"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+      <div class="err" id="aerr" role="status"></div>
+      <button class="ghostbtn" type="button" id="admOut" hidden>관리자 로그아웃</button>
+      <button class="ghostbtn" type="button" id="setBack">← 돌아가기</button>
     </form>
     <!-- 인증 완료 -->
     <section class="v" data-v="ok" hidden>
@@ -302,6 +323,40 @@ document.getElementById("openPost").href = POST_URL;
     if (c.ig && !document.getElementById("pw").value) { document.getElementById("backToIg").hidden = false; show("home"); }
   } catch (e) { /* 비밀번호 화면 유지 */ }
 })();
+// ---------------------------------------------------------------- 설정: 관리자 로그인 (이 기기를 관리자로 기억 → 과거 GP '영상' 탭이 보임)
+const ADM = "f1live.atok";
+let lastView = "admin";
+const isAdm = () => { try { return !!JSON.parse(localStorage.getItem(ADM)); } catch (e) { return false; } };
+function paintAdm() {
+  const on = isAdm(); document.getElementById("goSet").classList.toggle("on", on);
+  document.getElementById("admState").textContent = on ? "이 기기는 관리자로 로그인돼 있어요" : "관리자로 로그인하면 영상 만들기 탭이 보여요";
+  document.getElementById("apill").hidden = on; document.getElementById("admOut").hidden = !on;
+}
+document.getElementById("goSet").onclick = () => {
+  const cur = views.find((x) => !x.hidden); if (cur && cur.dataset.v !== "set") lastView = cur.dataset.v;
+  document.getElementById("aerr").textContent = ""; paintAdm(); show("set"); if (isAdm()) document.activeElement.blur();
+};
+document.getElementById("setBack").onclick = () => show(lastView);
+document.getElementById("admOut").onclick = () => { try { localStorage.removeItem(ADM); } catch (e) {} paintAdm(); };
+document.getElementById("fa").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const pw = document.getElementById("apw"), err = document.getElementById("aerr"), btn = document.getElementById("ago");
+  if (!pw.value) return;
+  btn.disabled = true; err.className = "err"; err.textContent = "확인 중…";
+  try {
+    const r = await fetch(RELAY + "/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ device: deviceId(), password: pw.value }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.atok) throw new Error(j.msg || "로그인할 수 없어요.");
+    try { localStorage.setItem(ADM, JSON.stringify(j.atok)); } catch (e) {}
+    err.className = "err"; err.textContent = "관리자로 로그인했어요"; paintAdm();
+    setTimeout(() => show(lastView), 900);
+  } catch (e) {
+    err.className = "err bad"; err.textContent = e.message;
+    const p = document.getElementById("apill"); p.classList.remove("shake"); void p.offsetWidth; p.classList.add("shake");
+  }
+  pw.value = ""; btn.disabled = false;
+});
+paintAdm();
 document.getElementById("copyHeart").onclick = async (e) => {
   const b = e.currentTarget;
   try { await navigator.clipboard.writeText("🩶"); }
